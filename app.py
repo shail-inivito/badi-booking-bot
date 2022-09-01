@@ -26,7 +26,7 @@ def reserve_time(browser, favorite_times):
             booking_link.click()
         else:
             continue
-        browser.find_element("xpath", "//a[text()='Reserve']").click()
+        browser.find_element("xpath", "//a[text()='Book']").click()
         reserved = "Reserved" in browser.find_element("xpath", "//div[@class='bold green']").text
         if reserved:
             return True, fav_time
@@ -34,7 +34,7 @@ def reserve_time(browser, favorite_times):
 
 def main():
     browser = webdriver.Chrome(executable_path=r'/usr/local/bin/chromedriver')
-    url = "https://northwestbadmintonacademy.sites.zenplanner.com/login.cfm"
+    url = "https://myaccount.better.org.uk/login"
     browser.get(url)
 
     login(browser)
@@ -45,14 +45,14 @@ def main():
     user_id = calendar_btn.get_attribute('href').split('=')[-1].split(':')[-1]
     calendar_btn.click()
 
-    favorite_times = ["5:00 PM", "6:00 PM"]
+    favorite_times = ["8:00 PM", "8:40 PM", "9:20 PM"]
     booked_details = []
     for count, date in enumerate(next_7_dates()):
         if len(booked_details) == 3 and count <= 5:
             print(f"[+] Already booked 3 weekdays. Skipping {date}")
             continue
         print(f"[+] Trying to look for timeslots on {date}")
-        calendar_date_link = (f"https://northwestbadmintonacademy.sites.zenplanner.com/calendar.cfm?"
+        calendar_date_link = (f"https://bookings.better.org.uk/location/tadworth-leisure-and-community-centre/badminton-40min/?"
             f"DATE={date}&calendarType=PERSON:{user_id}&VIEW=LIST&PERSONID={user_id}")
         browser.get(calendar_date_link)
         reserved, reservation_time = reserve_time(browser, favorite_times)
